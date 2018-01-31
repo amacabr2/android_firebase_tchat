@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">TchatFirebase</string>
+    <string name="act_main_pseudo">Pseudo</string>
+    <string name="act_main_btnlogin">CONNEXION</string>
 </resources>
