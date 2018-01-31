@@ -2,4 +2,8 @@
     <string name="app_name">TchatFirebase</string>
     <string name="act_main_pseudo">Pseudo</string>
     <string name="act_main_btnlogin">CONNEXION</string>
+    <string name="act_tchat_message">Message</string>
+    <string name="act_tchat_desc_imagebtn">Envoyer une image</string>
+    <string name="act_tchat_desc_sendbtn">Envoyer un message</string>
+    <string name="row_image_desc_img">Image</string>
 </resources>
