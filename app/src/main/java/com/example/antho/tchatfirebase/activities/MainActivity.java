@@ -25,10 +25,10 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener {
+import static com.example.antho.tchatfirebase.utils.Constants.PREF_PSEUDO;
+import static com.example.antho.tchatfirebase.utils.Constants.PREF_TCHAT;
 
-    public static final String PREF_TCHAT = "TCHAT";
-    public static final String PREF_PSEUDO = "PSEUDO";
+public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
     private static final String ACT_MAIN_BTN_LOGIN = "act_main_btn_login";
     private static final String TAG = "ERROR_MAIN_ACT";
