@@ -11,6 +11,7 @@ public class Constants {
 
     public static final String DB_USERS = "users";
     public static final String DB_USERNAMES = "usernames";
+    public static final String DB_MESSAGES = "messages";
 
     private Constants() {}
 }

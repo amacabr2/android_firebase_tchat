@@ -25,6 +25,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import static com.example.antho.tchatfirebase.utils.Constants.DB_USERNAMES;
+import static com.example.antho.tchatfirebase.utils.Constants.DB_USERS;
 import static com.example.antho.tchatfirebase.utils.Constants.PREF_PSEUDO;
 import static com.example.antho.tchatfirebase.utils.Constants.PREF_TCHAT;
 
@@ -48,16 +50,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        actMainPseudo = findViewById(R.id.actMain_pseudo);
-        actMainLoader = findViewById(R.id.actMain_loader);
-        actMainBtnLogin = findViewById(R.id.actMain_btnLogin);
-
-        actMainBtnLogin.setOnClickListener(this);
-        actMainBtnLogin.setTag(ACT_MAIN_BTN_LOGIN);
-
-        auth = FirebaseAuth.getInstance();
-        database = FirebaseDatabase.getInstance();
-        reference = database.getReference();
+        initView();
+        initFirebase();
 
         preferences = getSharedPreferences(PREF_TCHAT, MODE_PRIVATE);
 
@@ -78,6 +72,21 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
+    private void initFirebase() {
+        auth = FirebaseAuth.getInstance();
+        database = FirebaseDatabase.getInstance();
+        reference = database.getReference();
+    }
+
+    private void initView() {
+        actMainPseudo = findViewById(R.id.actMain_pseudo);
+        actMainLoader = findViewById(R.id.actMain_loader);
+        actMainBtnLogin = findViewById(R.id.actMain_btnLogin);
+
+        actMainBtnLogin.setOnClickListener(this);
+        actMainBtnLogin.setTag(ACT_MAIN_BTN_LOGIN);
+    }
+
     private void registerUser(final String username) {
         auth.signInAnonymously().addOnCompleteListener(new OnCompleteListener<AuthResult>() {
             @Override
@@ -93,11 +102,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         public void isValid(final String username) {
                             User user = new User(userId, username);
 
-                            reference.child("users").child(userId).setValue(user).addOnCompleteListener(MainActivity.this, new OnCompleteListener<Void>() {
+                            reference.child(DB_USERS).child(userId).setValue(user).addOnCompleteListener(MainActivity.this, new OnCompleteListener<Void>() {
                                 @Override
                                 public void onComplete(@NonNull Task<Void> task) {
                                     if (task.isSuccessful()) {
-                                        reference.child("usernames").child(username).setValue(userId);
+                                        reference.child(DB_USERNAMES).child(username).setValue(userId);
                                         preferences.edit().putString(PREF_PSEUDO, username).apply();
 
                                         startActivity(new Intent(getApplicationContext(), TchatActivity.class));
@@ -119,7 +128,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void checkUsername(final String username, final CheckUsernameCallback callback) {
-        reference.child("usernames").child(username).addListenerForSingleValueEvent(new ValueEventListener() {
+        reference.child(DB_USERNAMES).child(username).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if (dataSnapshot.getValue() != null) {

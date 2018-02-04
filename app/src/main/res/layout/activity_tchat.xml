@@ -49,9 +49,10 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:contentDescription="@string/act_tchat_desc_imagebtn"
-                android:src="@drawable/imgBtn"/>
+                android:src="@drawable/img_btn"/>
 
             <EditText
+                android:id="@+id/tchatAct_message"
                 android:layout_width="0dp"
                 android:layout_weight="1"
                 android:layout_height="wrap_content"
@@ -63,7 +64,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:contentDescription="@string/act_tchat_desc_sendbtn"
-                android:src="@drawable/sendBtn"/>
+                android:src="@drawable/send_btn"/>
 
         </LinearLayout>
 

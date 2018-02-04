@@ -6,4 +6,5 @@
     <string name="act_tchat_desc_imagebtn">Envoyer une image</string>
     <string name="act_tchat_desc_sendbtn">Envoyer un message</string>
     <string name="row_image_desc_img">Image</string>
+    <string name="menu_deconnection">Déconnection</string>
 </resources>
