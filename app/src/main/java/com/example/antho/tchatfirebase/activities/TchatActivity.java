@@ -1,5 +1,6 @@
 package com.example.antho.tchatfirebase.activities;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
@@ -9,12 +10,16 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.example.antho.tchatfirebase.R;
 import com.example.antho.tchatfirebase.adapters.TchatAdapter;
@@ -34,7 +39,7 @@ import static com.example.antho.tchatfirebase.utils.Constants.DB_MESSAGES;
 import static com.example.antho.tchatfirebase.utils.Constants.PREF_PSEUDO;
 import static com.example.antho.tchatfirebase.utils.Constants.PREF_TCHAT;
 
-public class TchatActivity extends AppCompatActivity implements View.OnClickListener {
+public class TchatActivity extends AppCompatActivity implements View.OnClickListener, TextView.OnEditorActionListener {
 
     private static final String ACT_TCHAT_SEND_MSG = "act_tchat_send_msg";
 
@@ -129,6 +134,18 @@ public class TchatActivity extends AppCompatActivity implements View.OnClickList
         }
     }
 
+    @Override
+    public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+        if (actionId == EditorInfo.IME_ACTION_DONE) {
+            sendMessage();
+            InputMethodManager imm = (InputMethodManager) actTchatMessage.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(actTchatMessage.getWindowToken(), 0);
+            return true;
+        }
+
+        return false;
+    }
+
     /**
      * Initialisation de la vue de l'activité
      */
@@ -147,6 +164,7 @@ public class TchatActivity extends AppCompatActivity implements View.OnClickList
 
         actTchatSendBtn.setOnClickListener(this);
         actTchatSendBtn.setTag(ACT_TCHAT_SEND_MSG);
+        actTchatMessage.setOnEditorActionListener(this);
     }
 
     /**
