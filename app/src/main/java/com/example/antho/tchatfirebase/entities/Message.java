@@ -79,4 +79,15 @@ public class Message {
     public void setDate(long date) {
         this.date = date;
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == this) {
+            return true;
+        }
+        if (!(obj instanceof Message)) {
+            return false;
+        }
+        return this.getUid().equals(((Message)obj).getUid());
+    }
 }

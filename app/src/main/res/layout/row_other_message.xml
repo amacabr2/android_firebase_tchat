@@ -9,7 +9,7 @@
     android:background="@color/colorAccent">
 
     <TextView
-        android:id="@+id/rowMessage_username"
+        android:id="@+id/rowOtherMessage_username"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textColor="@android:color/white"
@@ -17,7 +17,7 @@
         android:textStyle="bold"/>
 
     <TextView
-        android:id="@+id/rowMessage_message"
+        android:id="@+id/rowOtherMessage_message"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="20dp"

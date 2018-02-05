@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
@@ -13,14 +14,19 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 
 import com.example.antho.tchatfirebase.R;
+import com.example.antho.tchatfirebase.adapters.TchatAdapter;
 import com.example.antho.tchatfirebase.entities.Message;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import EventListener.TchatChildEventListener;
 
@@ -36,6 +42,7 @@ public class TchatActivity extends AppCompatActivity implements View.OnClickList
     private ImageButton actTchatImageBtn;
     private ImageButton actTchatSendBtn;
     private RecyclerView actTchatRecycler;
+    private TchatAdapter adapter;
 
     private FirebaseAuth auth;
     private FirebaseDatabase database;
@@ -131,6 +138,13 @@ public class TchatActivity extends AppCompatActivity implements View.OnClickList
         actTchatSendBtn = findViewById(R.id.tchatAct_sendBtn);
         actTchatRecycler = findViewById(R.id.tchatAct_recycler);
 
+        LinearLayoutManager manager = new LinearLayoutManager(this);
+        manager.setStackFromEnd(true);
+        actTchatRecycler.setLayoutManager(manager);
+        List<Message> messages = new ArrayList<>();
+        adapter = new TchatAdapter(messages);
+        actTchatRecycler.setAdapter(adapter);
+
         actTchatSendBtn.setOnClickListener(this);
         actTchatSendBtn.setTag(ACT_TCHAT_SEND_MSG);
     }
@@ -151,6 +165,7 @@ public class TchatActivity extends AppCompatActivity implements View.OnClickList
                     attachChildListener();
                     username = preferences.getString(PREF_PSEUDO, null);
                     userId = user.getUid();
+                    adapter.setUser(user);
                 } else {
                     startActivity(new Intent(getApplicationContext(), MainActivity.class));
                     finish();
@@ -164,7 +179,7 @@ public class TchatActivity extends AppCompatActivity implements View.OnClickList
      */
     private void attachChildListener() {
         if (childEventListener == null) {
-            childEventListener = new TchatChildEventListener();
+            childEventListener = new TchatChildEventListener(adapter, actTchatRecycler);
         }
         reference.child(DB_MESSAGES).limitToLast(100).addChildEventListener(childEventListener);
     }
@@ -185,7 +200,7 @@ public class TchatActivity extends AppCompatActivity implements View.OnClickList
     private void sendMessage() {
         String content = actTchatMessage.getText().toString();
         if (!TextUtils.isEmpty(content)) {
-            Message message = new Message(username, userId, content, null);
+            Message message = new Message(userId, username, content, null);
             reference.child(DB_MESSAGES).push().setValue(message);
             actTchatMessage.setText("");
         }
