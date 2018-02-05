@@ -1,4 +1,4 @@
-package EventListener;
+package com.example.antho.tchatfirebase.eventListener;
 
 import android.annotation.SuppressLint;
 import android.support.v7.widget.RecyclerView;

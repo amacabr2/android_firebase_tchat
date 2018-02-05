@@ -26,7 +26,6 @@ import android.widget.Toast;
 import com.example.antho.tchatfirebase.R;
 import com.example.antho.tchatfirebase.adapters.TchatAdapter;
 import com.example.antho.tchatfirebase.entities.Message;
-import com.example.antho.tchatfirebase.utils.Constants;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -43,7 +42,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import EventListener.TchatChildEventListener;
+import com.example.antho.tchatfirebase.eventListener.TchatChildEventListener;
 
 import static android.view.View.GONE;
 import static com.example.antho.tchatfirebase.utils.Constants.DB_MESSAGES;

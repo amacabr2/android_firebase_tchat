@@ -4,8 +4,10 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.example.antho.tchatfirebase.R;
 import com.example.antho.tchatfirebase.entities.Message;
 import com.google.firebase.auth.FirebaseUser;
@@ -20,6 +22,7 @@ public class TchatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
 
     private static final int SELF_MESSAGE = 0;
     private static final int OTHER_MESSAGE = 1;
+    private static final int IMG_MESSAGE = 2;
 
     private List<Message> messages;
     private FirebaseUser user;
@@ -57,7 +60,13 @@ public class TchatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
     @Override
     public int getItemViewType(int position) {
         if (messages.size() > 0) {
-            if (messages.get(position).getUserId().equals(user.getUid())) {
+            Message message = messages.get(position);
+
+            if (message.getContent() == null && message.getImageUrl() != null) {
+                return IMG_MESSAGE;
+            }
+
+            if (message.getUserId().equals(user.getUid())) {
                 return SELF_MESSAGE;
             } else {
                 return OTHER_MESSAGE;
@@ -78,6 +87,9 @@ public class TchatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
             case OTHER_MESSAGE:
                 view = LayoutInflater.from(parent.getContext()).inflate(R.layout.row_other_message, parent,  false);
                 return new OtherMessageViewHolder(view);
+            case IMG_MESSAGE:
+                view = LayoutInflater.from(parent.getContext()).inflate(R.layout.row_image, parent,  false);
+                return new ImageMessageViewHolder(view);
         }
 
         return null;
@@ -87,10 +99,16 @@ public class TchatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         Message message = messages.get(position) ;
 
-        if (holder.getItemViewType() == OTHER_MESSAGE) {
-            ((OtherMessageViewHolder) holder).bind(message);
-        } else if (holder.getItemViewType() == SELF_MESSAGE) {
-            ((SelfMessageViewHolder) holder).bind(message);
+        switch (holder.getItemViewType()) {
+            case OTHER_MESSAGE:
+                ((OtherMessageViewHolder) holder).bind(message);
+                break;
+            case SELF_MESSAGE:
+                ((SelfMessageViewHolder) holder).bind(message);
+                break;
+            case IMG_MESSAGE:
+                ((ImageMessageViewHolder) holder).bind(message);
+                break;
         }
     }
 
@@ -99,7 +117,7 @@ public class TchatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
         return messages.size();
     }
 
-    class SelfMessageViewHolder extends RecyclerView.ViewHolder {
+    private class SelfMessageViewHolder extends RecyclerView.ViewHolder {
 
         private TextView selfMessage;
 
@@ -113,7 +131,7 @@ public class TchatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
         }
     }
 
-    class OtherMessageViewHolder extends RecyclerView.ViewHolder {
+    private class OtherMessageViewHolder extends RecyclerView.ViewHolder {
 
         private TextView otherMessage;
         private TextView username;
@@ -127,6 +145,23 @@ public class TchatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
         void bind(Message message) {
             username.setText(message.getUsername());
             otherMessage.setText(message.getContent());
+        }
+    }
+
+    private class ImageMessageViewHolder extends RecyclerView.ViewHolder {
+
+        private ImageView image;
+        private TextView username;
+
+        public ImageMessageViewHolder(View itemView) {
+            super(itemView);
+            image = itemView.findViewById(R.id.rowImage_image);
+            username = itemView.findViewById(R.id.rowImage_imageUsername);
+        }
+
+        void bind(Message message) {
+            username.setText(message.getUsername());
+            Glide.with(image.getContext()).load(message.getImageUrl()).override(500, 500).fitCenter().placeholder(R.drawable.ic_launcher_background).into(image);
         }
     }
 }
