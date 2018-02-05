@@ -53,6 +53,7 @@ import static com.example.antho.tchatfirebase.utils.Constants.STORAGE_REF;
 
 public class TchatActivity extends AppCompatActivity implements View.OnClickListener, TextView.OnEditorActionListener {
 
+    private static final String STATE_STORAGE_REFERENCE = "storageReference";
     private static final String ACT_TCHAT_SEND_BTN = "act_tchat_send_btn";
     private static final String ACT_TCHAT_IMG_BTN = "act_tchat_img_btn";
     private static final int SELECT_PHOTO = 1;
@@ -117,6 +118,39 @@ public class TchatActivity extends AppCompatActivity implements View.OnClickList
         }
         detachChildListener();
         adapter.clearMessage();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        actTchatLoader.setVisibility(GONE);
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        if (storageReference != null) {
+            outState.putString(STATE_STORAGE_REFERENCE, storageReference.toString());
+        }
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        String ref = savedInstanceState.getString(STATE_STORAGE_REFERENCE);
+
+        if (ref != null) {
+            storageReference = FirebaseStorage.getInstance().getReferenceFromUrl(ref);
+            List tasks = storageReference.getActiveUploadTasks();
+
+            if (tasks.size() > 0) {
+                actTchatImageBtn.setEnabled(false);
+                actTchatLoader.setVisibility(View.VISIBLE);
+                uploadTask = (UploadTask) tasks.get(0);
+                addUploadListener(uploadTask);
+            }
+        }
+
     }
 
     /**
@@ -196,8 +230,7 @@ public class TchatActivity extends AppCompatActivity implements View.OnClickList
         LinearLayoutManager manager = new LinearLayoutManager(this);
         manager.setStackFromEnd(true);
         actTchatRecycler.setLayoutManager(manager);
-        List<Message> messages = new ArrayList<>();
-        adapter = new TchatAdapter(messages);
+        adapter = new TchatAdapter();
         actTchatRecycler.setAdapter(adapter);
 
         actTchatSendBtn.setOnClickListener(this);

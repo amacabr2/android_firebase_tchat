@@ -12,6 +12,7 @@ import com.example.antho.tchatfirebase.R;
 import com.example.antho.tchatfirebase.entities.Message;
 import com.google.firebase.auth.FirebaseUser;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -27,8 +28,8 @@ public class TchatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
     private List<Message> messages;
     private FirebaseUser user;
 
-    public TchatAdapter(List<Message> messages) {
-        this.messages = messages;
+    public TchatAdapter() {
+        messages = new ArrayList<>();
         setHasStableIds(true);
     }
 
