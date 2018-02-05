@@ -48,7 +48,7 @@ public class TchatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
         notifyItemRemoved(index);
     }
 
-    public void clearMessage() {
+    public void clearMessages() {
         messages.clear();
         notifyDataSetChanged();
     }

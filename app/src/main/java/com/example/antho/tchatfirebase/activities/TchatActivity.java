@@ -38,14 +38,14 @@ import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-
 import com.example.antho.tchatfirebase.eventListener.TchatChildEventListener;
 
 import static android.view.View.GONE;
 import static com.example.antho.tchatfirebase.utils.Constants.DB_MESSAGES;
+import static com.example.antho.tchatfirebase.utils.Constants.DB_USERNAMES;
+import static com.example.antho.tchatfirebase.utils.Constants.DB_USERS;
 import static com.example.antho.tchatfirebase.utils.Constants.PREF_PSEUDO;
 import static com.example.antho.tchatfirebase.utils.Constants.PREF_TCHAT;
 import static com.example.antho.tchatfirebase.utils.Constants.STORAGE_PATH;
@@ -117,15 +117,22 @@ public class TchatActivity extends AppCompatActivity implements View.OnClickList
             auth.removeAuthStateListener(authStateListener);
         }
         detachChildListener();
-        adapter.clearMessage();
+        adapter.clearMessages();
     }
 
+    /**
+     * On quitte l'application
+     */
     @Override
     protected void onStop() {
         super.onStop();
         actTchatLoader.setVisibility(GONE);
     }
 
+    /**
+     * Permet de continuer l'upload de l'image même si on fait une rotation de l'écran
+     * @param outState
+     */
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
@@ -172,7 +179,7 @@ public class TchatActivity extends AppCompatActivity implements View.OnClickList
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.logout) {
-            // TODO: déconnecter l'utilisateur
+            clearOnLogout();
         }
         return super.onOptionsItemSelected(item);
     }
@@ -358,5 +365,22 @@ public class TchatActivity extends AppCompatActivity implements View.OnClickList
 
         task.addOnCompleteListener(this, completeListener);
         task.addOnProgressListener(this, onProgressListener);
+    }
+
+    /**
+     * Déconnexion
+     */
+    private void clearOnLogout() {
+        FirebaseUser user = auth.getCurrentUser();
+        if (user != null) {
+            databaseReference.child(DB_USERS).child(user.getUid()).removeValue();
+            databaseReference.child(DB_USERNAMES).child(username).removeValue();
+            preferences.edit().remove(PREF_PSEUDO).apply();
+            adapter.clearMessages();
+            detachChildListener();
+            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+            startActivity(intent);
+            finish();
+        }
     }
 }
