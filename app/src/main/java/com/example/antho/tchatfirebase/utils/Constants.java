@@ -13,5 +13,8 @@ public class Constants {
     public static final String DB_USERNAMES = "usernames";
     public static final String DB_MESSAGES = "messages";
 
+    public static final String STORAGE_PATH = "gs://tchat-bb7a1.appspot.com/";
+    public static final String STORAGE_REF = "tchat";
+
     private Constants() {}
 }
